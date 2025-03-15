@@ -8,45 +8,58 @@ void error(string word1, string word2, string msg)
 }
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d)
 {
-	int sz1 = str1.size();
-int sz2 = str2.size();
+int len1 = str1.size();
+int len2 = str2.size();
 
+if (abs(len1 - len2) > d) return false; 
 
-if (abs(sz1 - sz2) > d) return false;
+int diff = 0; 
 
-vector<vector<int>> track(sz1 + 1, vector<int>(sz2 + 1, 0));
-
-for (int i = 0; i <= sz1; ++i)
-{
-	track[i][0] = i;
-}
+if (len1 == len2) {
 	
-for (int j = 0; j <= sz2; ++j)
-{
-	track[0][j] = j;
+	for (int i = 0; i < len1; ++i) {
+		if (str1[i] != str2[i]) diff++;
+		if (diff > d) return false;
+	}
+	return diff == d;
 }
+else if (len1 > len2) {
 	
+	int i = 0;
+	int j = 0;
 
-for (int i = 1; i <= sz1; ++i)
-{
-	for (int j = 1; j <= sz2; ++j) 
-	{
-		if (str1[i - 1] == str2[j - 1]) 
-		{
-			track[i][j] = track[i - 1][j - 1]; 
+	while (i < len1 && j < len2) {
+		if (str1[i] != str2[j]) {
+			diff++;
+			i++; 
+			if (diff > d) return false;
 		}
-		else 
-		{
-			track[i][j] = 1 + min({
-				track[i - 1][j - 1], 
-				track[i][j - 1],     
-				track[i - 1][j]      
-				});
+		else {
+			i++;
+			j++;
 		}
 	}
+	diff += (len1 - i); 
+	return diff == d;
 }
-
-return track[sz1][sz2] <= d;
+else {
+	
+	int i = 0; 
+	int j = 0;
+	while (i < len1 && j < len2) {
+		if (str1[i] != str2[j]) {
+			diff++;
+			j++; 
+			if (diff > d) return false;
+		}
+		else {
+			i++;
+			j++;
+		}
+	}
+	diff += (len2 - j); 
+	return diff == d;
+}
 
 }
 
@@ -58,7 +71,12 @@ bool is_adjacent(const string& word1, const string& word2)
 }
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list)
 {
-	if (begin_word == end_word) return { begin_word };
+	if (begin_word == end_word)
+{
+	vector<string> beginingWord;
+	beginingWord.push_back(begin_word);
+	return beginingWord;
+}
 
 	queue<vector<string>> ladder_queue;
 	ladder_queue.push({ begin_word });
@@ -99,9 +117,7 @@ void load_words(set<string>& word_list, const string& file_name)
 	if (!inputFile)
 		error("Cant", " Open", file_name);
 
-
 	string word;
-
 
 	while (inputFile >> word)
 	{
@@ -127,6 +143,7 @@ void print_word_ladder(const vector<string>& ladder)
 		cout << ladder[i];
 	
 	}
+    cout << endl;
 
 
 }
@@ -135,6 +152,8 @@ void verify_word_ladder()
 	set<string> word_list;
 
 	load_words(word_list, "src/words.txt");
+
+    my_assert(generate_word_ladder("were", "were", word_list).size() == 1);
 
 	my_assert(generate_word_ladder("cat", "dog", word_list).size() == 4);
 

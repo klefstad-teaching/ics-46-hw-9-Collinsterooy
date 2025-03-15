@@ -6,48 +6,46 @@
 #include <vector>
 #include <queue>
 #include <limits>
-#include <stack>
 
 using namespace std;
 
 constexpr int INF = numeric_limits<int>::max();
-
 constexpr int UNDEFINED = -1;
-    
 
 struct Edge {
     int src = 0;
     int dst = 0;
     int weight = 0;
+
     Edge(int s = 0, int d = 0, int w = 0) : src(s), dst(d), weight(w) {}
-    friend istream& operator>>(istream& in, Edge& e)
-    {
+
+    friend istream& operator>>(istream& in, Edge& e) {
         return in >> e.src >> e.dst >> e.weight;
     }
 
-    friend ostream& operator<<(ostream& out, const Edge& e)
-    {
+    friend ostream& operator<<(ostream& out, const Edge& e) {
         return out << "(" << e.src << "," << e.dst << "," << e.weight << ")";
     }
 };
 
-using Graph = std::vector<std::vector<Edge>>;
-
 struct Graph : public vector<vector<Edge>> {
     int numVertices = 0;
-
-    vector <int> adjacencylist;
-    vector <int> distance;
-    vector <int> previous;
-    vector <int> visited;
 };
 
 inline istream& operator>>(istream& in, Graph& G) {
     if (!(in >> G.numVertices))
         throw runtime_error("Unable to find input file");
+    
     G.resize(G.numVertices);
-    for (Edge e; in >> e;)
-        G[e.src].push_back(e);
+
+    for (Edge e; in >> e;) {
+        if (e.src < G.numVertices && e.dst < G.numVertices) {
+            G[e.src].push_back(e);
+        } else {
+            throw runtime_error("Invalid edge data.");
+        }
+    }
+
     return in;
 }
 
@@ -64,7 +62,4 @@ vector<int> dijkstra_shortest_path(const Graph& G, int source, vector<int>& prev
 vector<int> extract_shortest_path(const vector<int>& distances, const vector<int>& previous, int destination);
 void print_path(const vector<int>& v, int total);
 
-
-
-
-#endif // !DIJKSTRAS_H
+#endif // DIJKSTRAS_H
