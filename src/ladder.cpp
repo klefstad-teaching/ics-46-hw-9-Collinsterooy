@@ -8,8 +8,8 @@ void error(string word1, string word2, string msg)
 }
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d)
 {
-	int len1 = str1;
-	int len2 = str2;
+	int len1 = str1.size();
+	int len2 = str2.size();
 if (abs(len1 - len2) > d) return false;
 
     
@@ -21,7 +21,7 @@ if (abs(len1 - len2) > d) return false;
                 track[i][j] = j; 
             } else if (j == 0) {
                 track[i][j] = i; 
-            } else if (word1[i - 1] == word2[j - 1]) {
+            } else if (str1[i - 1] == str2[j - 1]) {
                 track[i][j] = track[i - 1][j - 1]; 
             } else {
 
@@ -30,7 +30,7 @@ if (abs(len1 - len2) > d) return false;
         }
     }
 
-    return dp[len1][len2] <= d;
+    return track[len1][len2] <= d;
 }
 
 bool is_adjacent(const string& word1, const string& word2)
