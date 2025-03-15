@@ -1,5 +1,6 @@
 #include "ladder.h"
 
+
 using namespace std;
 
 void error(string word1, string word2, string msg)
@@ -10,27 +11,38 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
 {
 	int len1 = str1.size();
 	int len2 = str2.size();
-if (abs(len1 - len2) > d) return false;
+	
 
-    
-    vector<vector<int>> track(len1 + 1, vector<int>(len2 + 1, 0));
+    if (abs(len1 - len2) > d) 
+		return false;  
 
-    for (int i = 0; i <= len1; ++i) {
-        for (int j = 0; j <= len2; ++j) {
-            if (i == 0) {
-                track[i][j] = j; 
-            } else if (j == 0) {
-                track[i][j] = i; 
-            } else if (str1[i - 1] == str2[j - 1]) {
-                track[i][j] = track[i - 1][j - 1]; 
+    int diff = 0;
+    int i = 0;
+	int j = 0;
+
+    while (i < len1 && j < len2) {
+        if (str1[i] != str2[j]) {
+            diff++;
+            if (diff > d) return false;  
+            
+           
+            if (len1 > len2) {
+                i++; 
+            } else if (len1 < len2) {
+                j++; 
             } else {
-
-                track[i][j] = 1 + min({track[i - 1][j], track[i][j - 1], track[i - 1][j - 1]});
+                i++; 
+				j++; 
             }
+        } else {
+            i++; 
+			j++;  
         }
     }
+   
+    diff += abs((len1 - i) - (len2 - j));  
 
-    return track[len1][len2] <= d;
+    return diff <= d;
 }
 
 bool is_adjacent(const string& word1, const string& word2)
