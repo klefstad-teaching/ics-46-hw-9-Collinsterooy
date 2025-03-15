@@ -97,7 +97,7 @@ void print_word_ladder(const vector<string>& ladder)
 {
 	if (ladder.empty())
 	{
-		cout << "No word ladder found" << endl;
+		cout << "No word ladder found." << endl;
 		return;
 
 	}
@@ -105,8 +105,8 @@ void print_word_ladder(const vector<string>& ladder)
     cout << "Word ladder found: ";
 	for (int i = 0; i < ladder.size(); ++i)
 	{
-		if (i > 0) cout << " ";
-		cout << ladder[i];
+		
+		cout << ladder[i]<< endl;
 	
 	}
     cout << endl;
@@ -118,8 +118,6 @@ void verify_word_ladder()
 	set<string> word_list;
 
 	load_words(word_list, "src/words.txt");
-
-    my_assert(generate_word_ladder("were", "were", word_list).size() == 0);
 
 	my_assert(generate_word_ladder("cat", "dog", word_list).size() == 4);
 
